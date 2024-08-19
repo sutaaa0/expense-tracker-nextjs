@@ -106,7 +106,7 @@ export function Dashboard() {
         </CardContent>
         <CardFooter className="flex-col items-start gap-2 text-sm">
           <div className="flex gap-2 font-medium leading-none">
-            Tren naik 5.2% bulan ini <TrendingUp className="h-4 w-4" />
+            Tren naik 5.2% bulan ini yaa <TrendingUp className="h-4 w-4" />
           </div>
           <div className="leading-none text-muted-foreground">Menampilkan pendapatan dan pengeluaran bulanan</div>
         </CardFooter>
