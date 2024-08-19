@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
+import { redirect } from "next/navigation";
 
 // Schema validasi menggunakan Zod
 const RegisterSchema = z.object({
@@ -43,7 +44,8 @@ export function RegisterForm() {
           description: "Registrasi Berhasil",
         });
       }
-      form.reset();
+
+      window.location.href = "/auth/login";
     } catch (error: any) {
       toast({
         title: "Registrasi Gagal",

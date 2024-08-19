@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
+import Cookie from "js-cookie";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -33,12 +33,21 @@ export function LoginForm() {
   async function onSubmit(data: z.infer<typeof LoginSchema>) {
     try {
       const result = await axios.post("http://localhost:3333/api/auth/login", data);
+      console.log("result", result);
+      if (result.status === 200) {
 
-      if (result.status == 200) {
+        // Simpan token ke localStorage
+        Cookie.set("token", result.data.token, { expires: 7 });
+        Cookie.set("userId", result.data.user.id, { expires: 7 });
+        Cookie.set("name", result.data.user.name, { expires: 7 });
+        Cookie.set("email", result.data.user.email, { expires: 7 });
+
         toast({
           title: "Success!",
           description: "Login Berhasil!",
         });
+
+        window.location.href = "/dashboard";
       }
 
       form.reset();
