@@ -1,11 +1,13 @@
 "use client";
 
-import React from "react";
+// src/components/Dashboard.tsx
+import React, { useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
 import { TrendingUp } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { useDashboardData } from "@/hooks/useDashboardData";
+
 
 interface MonthlyData {
   date: string;
@@ -26,9 +28,11 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function Dashboard() {
-  const { data, isLoading, error } = useDashboardData();
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [category, setCategory] = useState("");
 
-  console.log("data", data);
+  const { data, isLoading, error } = useDashboardData({ startDate, endDate, category });
 
   if (isLoading) return <p>Loading...</p>;
   if (error) {
@@ -59,6 +63,37 @@ export function Dashboard() {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-4">Dashboard </h1>
+      <div className="mb-4">
+        <label>
+          Start Date:
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="ml-2"
+          />
+        </label>
+        <label className="ml-4">
+          End Date:
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="ml-2"
+          />
+        </label>
+        <label className="ml-4">
+          Category:
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="ml-2"
+          >
+            <option value="">All</option>
+            {/* Render category options here */}
+          </select>
+        </label>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <Card>
           <CardHeader>
@@ -116,3 +151,6 @@ export function Dashboard() {
 }
 
 export default Dashboard;
+
+
+

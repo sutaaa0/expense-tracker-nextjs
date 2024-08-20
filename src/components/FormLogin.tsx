@@ -89,7 +89,11 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Login</Button>
+        <div className="flex w-full justify-between">
+          <Button type="submit">Login</Button>
+
+        </div>
+
       </form>
     </Form>
   );

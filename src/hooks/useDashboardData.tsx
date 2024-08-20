@@ -1,7 +1,7 @@
+// src/hooks/useDashboardData.ts
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Cookies from "js-cookie";
-
 
 interface MonthlyData {
   date: string;
@@ -18,16 +18,12 @@ interface DashboardData {
   monthlyExpense: MonthlyData[];
 }
 
-export const useDashboardData = () => {
-  // Ambil token dari cookie
+export const useDashboardData = (filters: { startDate?: string; endDate?: string; category?: string }) => {
   const token = Cookies.get("token");
-
-  // Ambil userId dari cookie
   const userId = Cookies.get("userId");
-  console.log("userId", userId);
 
   return useQuery<DashboardData>({
-    queryKey: ["dashboardData", userId],
+    queryKey: ["dashboardData", userId, filters],
     queryFn: async () => {
       if (!userId) {
         throw new Error("User ID tidak tersedia.");
@@ -36,8 +32,8 @@ export const useDashboardData = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        params: filters,
       });
-      console.log("ini condsole.log",response.data);
       return response.data;
     },
     enabled: !!userId, // Pastikan query hanya dijalankan jika userId tersedia
