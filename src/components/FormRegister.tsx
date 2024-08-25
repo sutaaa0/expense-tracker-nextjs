@@ -9,7 +9,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
-import { redirect } from "next/navigation";
+import Link from "next/link";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 // Schema validasi menggunakan Zod
 const RegisterSchema = z.object({
@@ -34,26 +36,40 @@ export function RegisterForm() {
     },
   });
 
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
   // Fungsi untuk menangani submit form
   async function onSubmit(data: z.infer<typeof RegisterSchema>) {
     try {
+      setLoading(true);
       const response = await axios.post("http://localhost:3333/api/auth/register", data);
       if (response.status == 201) {
         toast({
           title: "Registrasi Berhasil",
           description: "Registrasi Berhasil",
         });
+        
+        form.reset();
+        window.location.href = "/auth/login";
+      } else {
+        // Handle unexpected statuses
+        throw new Error("Unexpected response status: " + response.status);
       }
-
-      window.location.href = "/auth/login";
     } catch (error: any) {
+      console.error("Error during registration:", error); // Tambahkan log untuk melihat errornya
       toast({
         title: "Registrasi Gagal",
         description: error.response?.data?.error || "Terjadi kesalahan saat registrasi.",
         variant: "destructive",
       });
+    } finally {
+      setLoading(false); // Harus selalu dipanggil, meskipun terjadi error
+      console.log("Loading state reset to false");
     }
   }
+  
+  
 
   return (
     <Form {...form}>
@@ -91,13 +107,23 @@ export function RegisterForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="Password" {...field} />
+                <div className="flex justify-between items-center relative">
+                  <Input type={showPassword ? "text" : "password"} placeholder="Password" {...field} />
+                  <div className="absolute right-3 cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
+                    {showPassword ? <EyeOff className="text-gray-500" /> : <Eye className="text-gray-500" />}
+                  </div>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Register</Button>
+        <div className="flex w-full justify-between">
+          <Button type="submit">{loading ? "Loading..." : "Register"}</Button>
+          <Link href="/auth/login">
+            <p className="text-sm text-gray-500 underline hover:text-gray-600 transition-all">Already have an account?</p>
+          </Link>
+        </div>
       </form>
     </Form>
   );

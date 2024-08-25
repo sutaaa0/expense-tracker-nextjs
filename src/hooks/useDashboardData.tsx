@@ -21,6 +21,7 @@ interface DashboardData {
 export const useDashboardData = (filters: { startDate?: string; endDate?: string; category?: string }) => {
   const token = Cookies.get("token");
   const userId = Cookies.get("userId");
+  console.log("userId server :", userId);
 
   return useQuery<DashboardData>({
     queryKey: ["dashboardData", userId, filters],
